@@ -1,5 +1,5 @@
-/* libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
- * Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
+/* libUIOHook: Cross-platform userland keyboard and mouse hooking.
+ * Copyright (C) 2006-2020 Alexander Barker.  All Rights Received.
  * https://github.com/kwhat/libuiohook/
  *
  * libUIOHook is free software: you can redistribute it and/or modify
@@ -29,30 +29,30 @@
 #include "logger.h"
 
 static bool default_logger(unsigned int level, const char *format, ...) {
-	bool status = false;
+    bool status = false;
 
-	#ifndef USE_QUIET
-	va_list args;
-	switch (level) {
-		#ifdef USE_DEBUG
-		case LOG_LEVEL_DEBUG:
-		#endif
-		case LOG_LEVEL_INFO:
-			va_start(args, format);
-  			status = vfprintf(stdout, format, args) >= 0;
-			va_end(args);
-			break;
+    #ifndef USE_QUIET
+    va_list args;
+    switch (level) {
+        #ifdef USE_DEBUG
+        case LOG_LEVEL_DEBUG:
+        #endif
+        case LOG_LEVEL_INFO:
+            va_start(args, format);
+              status = vfprintf(stdout, format, args) >= 0;
+            va_end(args);
+            break;
 
-		case LOG_LEVEL_WARN:
-		case LOG_LEVEL_ERROR:
-			va_start(args, format);
-  			status = vfprintf(stderr, format, args) >= 0;
-			va_end(args);
-			break;
-	}
-	#endif
+        case LOG_LEVEL_WARN:
+        case LOG_LEVEL_ERROR:
+            va_start(args, format);
+              status = vfprintf(stderr, format, args) >= 0;
+            va_end(args);
+            break;
+    }
+    #endif
 
-	return status;
+    return status;
 }
 
 // Current logger function pointer, this should never be null.
@@ -61,10 +61,9 @@ logger_t logger = &default_logger;
 
 
 UIOHOOK_API void hook_set_logger_proc(logger_t logger_proc) {
-	if (logger_proc == NULL) {
-		logger = &default_logger;
-	}
-	else {
-		logger = logger_proc;
-	}
+    if (logger_proc == NULL) {
+        logger = &default_logger;
+    } else {
+        logger = logger_proc;
+    }
 }

@@ -28,14 +28,14 @@ function install(runtime, abi, platform, arch, cb) {
   const pkgVersion = pkg.version;
   const currentPlatform = pkg.name + '-v' + pkgVersion + '-' + essential;
 
-  console.log('Downloading prebuild for platform:', currentPlatform);
-  let downloadUrl = 'https://github.com/wilix-team/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
+  // console.log('Downloading prebuild for platform:', currentPlatform);
+  // let downloadUrl = 'https://github.com/wilix-team/iohook/releases/download/v' + pkgVersion + '/' + currentPlatform + '.tar.gz';
 
-  let nuggetOpts = {
-    dir: os.tmpdir(),
-    target: 'prebuild.tar.gz',
-    strictSSL: true
-  };
+  // let nuggetOpts = {
+  //   dir: os.tmpdir(),
+  //   target: 'prebuild.tar.gz',
+  //   strictSSL: true
+  // };
 
   let npmrc = {};
 
@@ -45,53 +45,67 @@ function install(runtime, abi, platform, arch, cb) {
     console.warn('Error reading npm configuration: ' + error.message);
   }
 
-  if (npmrc && npmrc.proxy) {
-    nuggetOpts.proxy = npmrc.proxy;
-  }
+  // if (npmrc && npmrc.proxy) {
+  //   nuggetOpts.proxy = npmrc.proxy;
+  // }
 
-  if (npmrc && npmrc['https-proxy']) {
-    nuggetOpts.proxy = npmrc['https-proxy'];
-  }
+  // if (npmrc && npmrc['https-proxy']) {
+  //   nuggetOpts.proxy = npmrc['https-proxy'];
+  // }
 
-  if (npmrc && npmrc['strict-ssl'] === false) {
-    nuggetOpts.strictSSL = false;
-  }
+  // if (npmrc && npmrc['strict-ssl'] === false) {
+  //   nuggetOpts.strictSSL = false;
+  // }
 
-  nugget(downloadUrl, nuggetOpts, function(errors) {
-    if (errors) {
-      const error = errors[0];
+  // nugget(downloadUrl, nuggetOpts, function(errors) {
+  //   if (errors) {
+  //     const error = errors[0];
 
-      if (error.message.indexOf('404') === -1) {
-        onerror(error);
-      } else {
-        console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
-        console.error('Try to compile for your platform:');
-        console.error('# cd node_modules/iohook;');
-        console.error('# npm run compile');
-        console.error('');
-        onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
-      }
+  //     if (error.message.indexOf('404') === -1) {
+  //       onerror(error);
+  //     } else {
+  //       console.error('Prebuild for current platform (' + currentPlatform + ') not found!');
+  //       console.error('Try to compile for your platform:');
+  //       console.error('# cd node_modules/iohook;');
+  //       console.error('# npm run compile');
+  //       console.error('');
+  //       onerror('Prebuild for current platform (' + currentPlatform + ') not found!');
+  //     }
+  //   }
+
+  //   let options = {
+  //     readable: true,
+  //     writable: true,
+  //     hardlinkAsFilesFallback: true
+  //   };
+
+  //   let binaryName;
+  //   let updateName = function(entry) {
+  //     if (/\.node$/i.test(entry.name)) binaryName = entry.name
+  //   };
+  //   let targetFile = path.join(__dirname, 'builds', essential);
+  //   let extract = tfs.extract(targetFile, options)
+  //     .on('entry', updateName);
+  //   pump(fs.createReadStream(path.join(nuggetOpts.dir, nuggetOpts.target)), zlib.createGunzip(), extract, function(err) {
+  //     if (err) {
+  //       return onerror(err);
+  //     }
+  //     cb()
+  //   });
+  // });
+
+  let buildFile = path.join(__dirname, 'build');
+  let targetFile = path.join(__dirname, 'builds', essential, 'build');  
+  const mkdirp = require('mkdirp')
+  mkdirp.sync(targetFile);
+
+  const ncp = require('ncp').ncp;
+  ncp(buildFile, targetFile, function (err) {
+    if(err){
+      onerror('Cannot compile for current platform (' + currentPlatform + ')!');
+      return;
     }
-
-    let options = {
-      readable: true,
-      writable: true,
-      hardlinkAsFilesFallback: true
-    };
-
-    let binaryName;
-    let updateName = function(entry) {
-      if (/\.node$/i.test(entry.name)) binaryName = entry.name
-    };
-    let targetFile = path.join(__dirname, 'builds', essential);
-    let extract = tfs.extract(targetFile, options)
-      .on('entry', updateName);
-    pump(fs.createReadStream(path.join(nuggetOpts.dir, nuggetOpts.target)), zlib.createGunzip(), extract, function(err) {
-      if (err) {
-        return onerror(err);
-      }
-      cb()
-    });
+    cb();
   });
 }
 

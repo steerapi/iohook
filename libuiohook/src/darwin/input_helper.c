@@ -1,5 +1,5 @@
-/* libUIOHook: Cross-platfrom userland keyboard and mouse hooking.
- * Copyright (C) 2006-2017 Alexander Barker.  All Rights Received.
+/* libUIOHook: Cross-platform userland keyboard and mouse hooking.
+ * Copyright (C) 2006-2020 Alexander Barker.  All Rights Received.
  * https://github.com/kwhat/libuiohook/
  *
  * libUIOHook is free software: you can redistribute it and/or modify
@@ -196,14 +196,12 @@ UniCharCount keycode_to_unicode(CGEventRef event_ref, UniChar *buffer, UniCharCo
 						CFStringUppercase(keytxt, locale);
 						CFRelease(locale);
 						CFRelease(keytxt);
-					}
-					else {
+					} else {
 						// There was an problem creating the CFMutableStringRef.
 						count = 0;
 					}
 				}
-			}
-			else {
+			} else {
 				// Make sure the buffer count is zero if an error occurred.
 				count = 0;
 			}
@@ -462,7 +460,7 @@ static const uint16_t keycode_scancode_table[][2] = {
 	/* 223 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xDF
 	/* 224 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE0
 	/* 225 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE1
-	/* 226 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE2
+	/* 226 */	{ VC_LESSER_GREATER,	kVK_Undefined			},	// 0xE2
 	/* 227 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE3
 	/* 228 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE4
 	/* 229 */	{ VC_UNDEFINED,			kVK_Undefined			},	// 0xE5
@@ -511,8 +509,7 @@ UInt64 scancode_to_keycode(uint16_t scancode) {
 	// Bound check 0 <= keycode < 128
 	if (scancode < 128) {
 		keycode = keycode_scancode_table[scancode][1];
-	}
-	else {
+	} else {
 		// Calculate the upper offset.
 		unsigned short i = (scancode & 0x007F) | 0x80;
 
