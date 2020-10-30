@@ -1,6 +1,6 @@
 {
   "name": "@steerapi/iohook",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "description": "Node.js global keyboard and mouse hook",
   "main": "index.js",
   "types": "index.d.ts",

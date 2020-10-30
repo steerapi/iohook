@@ -446,10 +446,16 @@ v8::Local<v8::Object> fillEventObject(uiohook_event event) {
     }
 
     if (event.type == EVENT_KEY_TYPED) {
-      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+      // keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+
+      char* character = (char*) &event.data.keyboard.keychar;
+
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keychar").ToLocalChecked(), Nan::New(character).ToLocalChecked());
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keychar));
+    } else {
+      keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
     }
 
-    keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keycode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.keycode));
     keyboard->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("rawcode").ToLocalChecked(), Nan::New((uint16_t)event.data.keyboard.rawcode));
 
     obj->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), Nan::New("keyboard").ToLocalChecked(), keyboard);

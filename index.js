@@ -202,6 +202,7 @@ class IOHook extends EventEmitter {
       const event = msg.mouse || msg.keyboard || msg.wheel;
 
       event.type = events[msg.type];
+      event.mask = msg.mask;
 
       this._handleShift(event);
       this._handleAlt(event);
